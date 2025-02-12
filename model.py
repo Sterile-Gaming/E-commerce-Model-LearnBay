@@ -148,6 +148,7 @@ for col in categorical_cols:
 rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
 rf_model.fit(X_train, y_train)  # ✅ Now, all features are numerical
 rf_preds = rf_model.predict(X_test)
+rf_probs = rf_model.predict_proba(X_test)[:, 1]
 
 # %%
 # Train XGBoost Classifier
@@ -157,15 +158,29 @@ from xgboost import XGBClassifier
 xgb_model = XGBClassifier(n_estimators=100, learning_rate=0.05, random_state=42, use_label_encoder=False, eval_metric="logloss")
 xgb_model.fit(X_train, y_train)
 xgb_preds = xgb_model.predict(X_test)
+xgb_probs = xgb_model.predict_proba(X_test)[:, 1]
 
 # %%
-print("Random Forest Accuracy:", accuracy_score(y_test, rf_preds))
-print("Random Forest AUC:", roc_auc_score(y_test, rf_preds))
-print(classification_report(y_test, rf_preds))
+from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 
-print("XGBoost Accuracy:", accuracy_score(y_test, xgb_preds))
-print("XGBoost AUC:", roc_auc_score(y_test, xgb_preds))
-print(classification_report(y_test, xgb_preds))
+def evaluate_model(name, y_test, preds, probs):
+    print(f"\n📌 **{name} Model Performance:**\n")
+    print(f"✅ Accuracy: {accuracy_score(y_test, preds):.4f}")
+    print(f"✅ Precision: {precision_score(y_test, preds):.4f}")
+    print(f"✅ Recall: {recall_score(y_test, preds):.4f}")
+    print(f"✅ F1-Score: {f1_score(y_test, preds):.4f}")
+    print(f"✅ ROC-AUC: {roc_auc_score(y_test, probs):.4f}")
+    
+    print("\n🔹 Classification Report:\n", classification_report(y_test, preds))
+    print("\n🔹 Confusion Matrix:")
+    print(confusion_matrix(y_test, preds))
+
+# %%
+# Evaluate RandomForest
+evaluate_model("Random Forest", y_test, rf_preds, rf_probs)
+
+# Evaluate XGBoost
+evaluate_model("XGBoost", y_test, xgb_preds, xgb_probs)
 
 # %%
 # Feature Importance Analysis
@@ -276,27 +291,6 @@ plt.show()
 # print("Best XGBoost Parameters:", xgb_grid.best_params_)
 
 # %%
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_auc_score
-
-# Make Predictions
-rf_preds = rf_model.predict(X_test)
-xgb_preds = xgb_model.predict(X_test)
-
-# Evaluate Random Forest
-print("Random Forest Performance:")
-print("Accuracy:", accuracy_score(y_test, rf_preds))
-print("AUC:", roc_auc_score(y_test, rf_model.predict_proba(X_test)[:,1]))
-print(confusion_matrix(y_test, rf_preds))
-print(classification_report(y_test, rf_preds))
-
-# Evaluate XGBoost
-print("\nXGBoost Performance:")
-print("Accuracy:", accuracy_score(y_test, xgb_preds))
-print("AUC:", roc_auc_score(y_test, xgb_model.predict_proba(X_test)[:,1]))
-print(confusion_matrix(y_test, xgb_preds))
-print(classification_report(y_test, xgb_preds))
-
-# %%
 # Create a DataFrame with all features initialized to 0
 new_user = pd.DataFrame(columns=X_train.columns, data=np.zeros((1, len(X_train.columns))))
 
@@ -326,14 +320,5 @@ y_probs = xgb_model.predict_proba(new_user)  # Probabilities for both classes
 
 print(f"Probability of NOT purchasing: {y_probs[0][0]:.4f}")
 print(f"Probability of PURCHASING: {y_probs[0][1]:.4f}")
-
-# %%
-from sklearn.metrics import classification_report
-
-# Predict on test data
-y_pred = xgb_model.predict(X_test)  # Use your test dataset (X_test)
-
-# Evaluate model
-print(classification_report(y_test, y_pred))  # Compare predictions with actual labels
 
 
