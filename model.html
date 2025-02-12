@@ -7855,6 +7855,7 @@ a.anchor-link {
 <span class="n">rf_model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">rf_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>  <span class="c1"># ✅ Now, all features are numerical</span>
 <span class="n">rf_preds</span> <span class="o">=</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">rf_probs</span> <span class="o">=</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -7875,6 +7876,33 @@ a.anchor-link {
 <span class="n">xgb_model</span> <span class="o">=</span> <span class="n">XGBClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">use_label_encoder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eval_metric</span><span class="o">=</span><span class="s2">"logloss"</span><span class="p">)</span>
 <span class="n">xgb_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="n">xgb_preds</span> <span class="o">=</span> <span class="n">xgb_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">xgb_probs</span> <span class="o">=</span> <span class="n">xgb_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_model</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">,</span> <span class="n">probs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">📌 **</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> Model Performance:**</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Accuracy: </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">preds</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Precision: </span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">preds</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ Recall: </span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">preds</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ F1-Score: </span><span class="si">{</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">preds</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✅ ROC-AUC: </span><span class="si">{</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">probs</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">🔹 Classification Report:</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">🔹 Confusion Matrix:"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -7885,16 +7913,14 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Random Forest Accuracy:"</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">rf_preds</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Random Forest AUC:"</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">rf_preds</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">rf_preds</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Evaluate RandomForest</span>
+<span class="n">evaluate_model</span><span class="p">(</span><span class="s2">"Random Forest"</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">rf_preds</span><span class="p">,</span> <span class="n">rf_probs</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"XGBoost Accuracy:"</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">xgb_preds</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"XGBoost AUC:"</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">xgb_preds</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">xgb_preds</span><span class="p">))</span>
+<span class="c1"># Evaluate XGBoost</span>
+<span class="n">evaluate_model</span><span class="p">(</span><span class="s2">"XGBoost"</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">xgb_preds</span><span class="p">,</span> <span class="n">xgb_probs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7907,9 +7933,17 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Random Forest Accuracy: 0.9685
-Random Forest AUC: 0.9684096993204535
-              precision    recall  f1-score   support
+<pre>
+📌 **Random Forest Model Performance:**
+
+✅ Accuracy: 0.9685
+✅ Precision: 0.9412
+✅ Recall: 0.9997
+✅ F1-Score: 0.9695
+✅ ROC-AUC: 0.9988
+
+🔹 Classification Report:
+               precision    recall  f1-score   support
 
            0       1.00      0.94      0.97      8974
            1       0.94      1.00      0.97      9026
@@ -7918,9 +7952,21 @@ Random Forest AUC: 0.9684096993204535
    macro avg       0.97      0.97      0.97     18000
 weighted avg       0.97      0.97      0.97     18000
 
-XGBoost Accuracy: 0.998
-XGBoost AUC: 0.997994205482505
-              precision    recall  f1-score   support
+
+🔹 Confusion Matrix:
+[[8410  564]
+ [   3 9023]]
+
+📌 **XGBoost Model Performance:**
+
+✅ Accuracy: 0.9980
+✅ Precision: 0.9960
+✅ Recall: 1.0000
+✅ F1-Score: 0.9980
+✅ ROC-AUC: 1.0000
+
+🔹 Classification Report:
+               precision    recall  f1-score   support
 
            0       1.00      1.00      1.00      8974
            1       1.00      1.00      1.00      9026
@@ -7929,6 +7975,10 @@ XGBoost AUC: 0.997994205482505
    macro avg       1.00      1.00      1.00     18000
 weighted avg       1.00      1.00      1.00     18000
 
+
+🔹 Confusion Matrix:
+[[8938   36]
+ [   0 9026]]
 </pre>
 </div>
 </div>
@@ -7939,7 +7989,7 @@ weighted avg       1.00      1.00      1.00     18000
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Feature Importance Analysis</span>
@@ -7955,7 +8005,7 @@ weighted avg       1.00      1.00      1.00     18000
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Plot Feature Importance</span>
@@ -7985,7 +8035,7 @@ weighted avg       1.00      1.00      1.00     18000
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_val_score</span>
@@ -8022,7 +8072,7 @@ XGBoost Cross-Validation Accuracy: 0.9975 ± 0.0004
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
@@ -8074,7 +8124,7 @@ Regularized XGBoost AUC: 0.9999518144126733
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Feature importance for Random Forest</span>
@@ -8159,80 +8209,7 @@ xgb_grid.fit(X_train, y_train)</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">roc_auc_score</span>
-
-<span class="c1"># Make Predictions</span>
-<span class="n">rf_preds</span> <span class="o">=</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">xgb_preds</span> <span class="o">=</span> <span class="n">xgb_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-<span class="c1"># Evaluate Random Forest</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Random Forest Performance:"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Accuracy:"</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">rf_preds</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"AUC:"</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">rf_preds</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">rf_preds</span><span class="p">))</span>
-
-<span class="c1"># Evaluate XGBoost</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">XGBoost Performance:"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Accuracy:"</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">xgb_preds</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"AUC:"</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">xgb_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">xgb_preds</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">xgb_preds</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Random Forest Performance:
-Accuracy: 0.9685
-AUC: 0.998825675384649
-[[8410  564]
- [   3 9023]]
-              precision    recall  f1-score   support
-
-           0       1.00      0.94      0.97      8974
-           1       0.94      1.00      0.97      9026
-
-    accuracy                           0.97     18000
-   macro avg       0.97      0.97      0.97     18000
-weighted avg       0.97      0.97      0.97     18000
-
-
-XGBoost Performance:
-Accuracy: 0.9883888888888889
-AUC: 0.9999518144126733
-[[8765  209]
- [   0 9026]]
-              precision    recall  f1-score   support
-
-           0       1.00      0.98      0.99      8974
-           1       0.98      1.00      0.99      9026
-
-    accuracy                           0.99     18000
-   macro avg       0.99      0.99      0.99     18000
-weighted avg       0.99      0.99      0.99     18000
-
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [39]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Create a DataFrame with all features initialized to 0</span>
@@ -8279,47 +8256,6 @@ weighted avg       0.99      0.99      0.99     18000
 <pre>Prediction: Will Purchase
 Probability of NOT purchasing: 0.0467
 Probability of PURCHASING: 0.9533
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">classification_report</span>
-
-<span class="c1"># Predict on test data</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">xgb_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>  <span class="c1"># Use your test dataset (X_test)</span>
-
-<span class="c1"># Evaluate model</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>  <span class="c1"># Compare predictions with actual labels</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>              precision    recall  f1-score   support
-
-           0       1.00      0.98      0.99      8974
-           1       0.98      1.00      0.99      9026
-
-    accuracy                           0.99     18000
-   macro avg       0.99      0.99      0.99     18000
-weighted avg       0.99      0.99      0.99     18000
-
 </pre>
 </div>
 </div>
