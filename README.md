@@ -4,6 +4,10 @@
 
 This machine learning model predicts whether a user will make a purchase on an e-commerce platform based on various user behavior and product features.
 
+## Website
+
+The model is deployed and accessible at: [https://model-4kd.pages.dev](https://model-4kd.pages.dev)
+
 ## Features Used
 
 - User Demographics
@@ -51,6 +55,66 @@ This machine learning model predicts whether a user will make a purchase on an e
 - ROC-AUC scores
 - Classification reports
 - Feature importance analysis
+
+## Model Performance
+
+### Random Forest Results
+
+- **Key Metrics:**
+  - Accuracy: 0.9685
+  - Precision: 0.9412
+  - Recall: 0.9997
+  - F1-Score: 0.9695
+  - ROC-AUC: 0.9988
+
+**Classification Report:**
+
+```
+               precision    recall  f1-score   support
+
+           0       1.00      0.94      0.97      8974
+           1       0.94      1.00      0.97      9026
+
+    accuracy                           0.97     18000
+   macro avg       0.97      0.97      0.97     18000
+weighted avg       0.97      0.97      0.97     18000
+```
+
+**Confusion Matrix:**
+
+```
+[[8410  564]
+ [   3 9023]]
+```
+
+### XGBoost Results
+
+- **Key Metrics:**
+  - Accuracy: 0.9980
+  - Precision: 0.9960
+  - Recall: 1.0000
+  - F1-Score: 0.9980
+  - ROC-AUC: 1.0000
+
+**Classification Report:**
+
+```
+               precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      8974
+           1       1.00      1.00      1.00      9026
+
+    accuracy                           1.00     18000
+   macro avg       1.00      1.00      1.00     18000
+weighted avg       1.00      1.00      1.00     18000
+```
+
+**Confusion Matrix:**
+
+```
+[[8938   36]
+ [   0 9026]]
+```
 
 ## Usage Example
 
